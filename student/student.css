@@ -1,0 +1,250 @@
+body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f8;
+            color: #333;
+        }
+
+        h1, h2, h3, p {
+            margin: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* ---------------- LAYOUT ---------------- */
+        .layout {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #1e1e2f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 24px;
+            letter-spacing: 1px;
+            color: #00bfff;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 15px;
+            margin: 6px 0;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .sidebar a:hover {
+            background: #00bfff;
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .sidebar button {
+            margin-top: auto;
+            padding: 12px 15px;
+            background: #ff4b5c;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #fff;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar button:hover {
+            background: #e03a4b;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+        }
+
+        .main h1 {
+            margin-bottom: 10px;
+            color: #1e1e2f;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        /* ---------------- CARD ---------------- */
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .card h3 {
+            margin-bottom: 8px;
+            color: #1e1e2f;
+        }
+
+        .card p {
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .playBtn, .buy-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            font-weight: 500;
+            border-radius: 6px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .playBtn {
+            background: #00bfff;
+            color: #fff;
+        }
+
+        .playBtn:hover {
+            background: #009edb;
+            transform: scale(1.05);
+        }
+
+        .buy-btn {
+            background: #28a745;
+            color: #fff;
+            margin-top: 10px;
+        }
+
+        .buy-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        /* ---------------- PROGRESS BAR ---------------- */
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 8px;
+            height: 16px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00bfff, #28a745);
+            border-radius: 8px 0 0 8px;
+            transition: width 0.5s ease;
+        }
+
+        /* ---------------- MODALS ---------------- */
+        #videoModal,
+        #assignmentModal,
+        #purchaseModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #videoModal div,
+        #assignmentModal div,
+        #purchaseModal div {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        #videoModal iframe {
+            border-radius: 10px;
+        }
+
+        #closeVideoModal,
+        #closeAssignmentModal,
+        #closePurchaseModal {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        #closeVideoModal:hover,
+        #closeAssignmentModal:hover,
+        #closePurchaseModal:hover {
+            color: #000;
+        }
+
+        #purchaseForm input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        #purchaseForm button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        #purchaseForm button:hover {
+            background: #0056b3;
+        }
+
+        /* ---------------- ANIMATION ---------------- */
+        @keyframes fadeIn {
+            from {opacity:0; transform: translateY(-10px);}
+            to {opacity:1; transform: translateY(0);}
+        }
+
+        /* ---------------- RESPONSIVE ---------------- */
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
+            .sidebar a { padding: 8px 12px; margin: 0 5px; }
+            .main { padding: 20px; }
+        }

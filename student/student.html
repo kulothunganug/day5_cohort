@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LearnHub - Student Dashboard</title>
+    <link rel="stylesheet" href="student.css">
+    <style>
+        body { margin:0; font-family:Segoe UI; background:#f5f6f8; }
+        .layout { display:flex; height:100vh; }
+        .sidebar { width:220px; background:#2f2f2f; color:white; padding:20px; display:flex; flex-direction:column; }
+        .sidebar h2 { text-align:center; margin-bottom:30px; }
+        .sidebar a { color:white; text-decoration:none; padding:10px 0; cursor:pointer; }
+        .sidebar a:hover { background:#444; padding-left:10px; border-radius:4px; }
+        .sidebar button { margin-top:auto; padding:10px; background:#d9534f; color:white; border:none; cursor:pointer; border-radius:4px; }
+        .main { flex:1; padding:20px; overflow-y:auto; }
+        .card { background:white; padding:20px; margin-bottom:20px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); box-shadow:0 6px 15px rgba(0,0,0,0.15); }
+        h1 { margin-top:0; font-size:2rem; color:#333; }
+        .subtitle { color:#555; margin-bottom:15px; }
+        .buy-btn { padding:10px 15px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer; transition:0.2s; }
+        .buy-btn:hover { background:#0056b3; }
+        input, button { font-family:inherit; }
+        label { font-weight:bold; margin-top:10px; display:block; }
+        #content iframe { border-radius:10px; margin-top:10px; }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <div class="sidebar">
+        <h2>LearnHub</h2>
+        <a onclick="showSection('courses')">My Courses</a>
+        <a onclick="showSection('assignments')">Assignments</a>
+        <a onclick="showSection('progress')">Progress</a>
+        <a onclick="showSection('buy')">Buy Courses</a>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main">
+        <h1>Student Dashboard</h1>
+        <p class="subtitle">Track your learning activity</p>
+
+        <div id="content">
+            <div class="card">
+                <h3>Welcome to EduStud!</h3>
+                <p>
+                    EduStud is your personal online learning dashboard. Here you can access all your courses, 
+                    check upcoming assignments, track your progress, and purchase new courses. 
+                    Our platform provides interactive video lessons, quizzes, and progress tracking 
+                    to help you learn efficiently and stay on top of your studies. 
+                    Use the sidebar to navigate through your courses, assignments, and performance insights.
+                </p>
+                <p>
+                    Get started by selecting a section from the sidebar. Happy learning! 🚀
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Link to your existing JS file -->
+<script src="student.js"></script>
+
+</body>
+</html>
