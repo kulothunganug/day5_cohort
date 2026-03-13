@@ -6,7 +6,6 @@ from auth_utils import decode_access_token
 from models import User
 from database import get_session
 
-# This matches the login endpoint URL
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 def get_current_user(
