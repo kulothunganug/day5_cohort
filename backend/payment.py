@@ -11,12 +11,11 @@ from schemas import PaymentCreate, PaymentVerify
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-RAZORPAY_KEY_SECRET = os.getenv(
-    "RAZORPAY_KEY_SECRET",
-)
+RAZORPAY_KEY_ID = "rzp_test_SQfCf701bC4IEw"
+RAZORPAY_KEY_SECRET = "W6SZLl2DCW5ABp1ZIzBdlz4d"
 
 client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+print(client)
 
 
 @router.post("/create-order")
@@ -39,16 +38,21 @@ def create_order(
         raise HTTPException(status_code=400, detail="Already enrolled in this course")
 
     order_data = {
-        "amount": course.price,
+        "amount": int(course.price * 100),
         "currency": "INR",
         "receipt": f"receipt_course_{course.id}_user_{current_user.id}",
         "notes": {"course_id": course.id, "user_id": current_user.id},
+        "payment_capture": 0,
     }
-
+    print(order_data)
+    order = razorpay.resources.order.Order(client).create(order_data)
+    print(order)
     try:
-        order = client.order.create(data=order_data)
+        order = razorpay.resources.order.Order(client).create(order_data)
+        print(order)
         return order
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -66,6 +70,11 @@ def verify_payment(
                 "razorpay_signature": verify_in.razorpay_signature,
             }
         )
+
+        print(current_user.id)
+
+        if not current_user.id:
+            return
 
         enrollment = Enrollment(
             user_id=current_user.id,

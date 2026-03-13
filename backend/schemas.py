@@ -14,6 +14,11 @@ class UserCreate(BaseModel):
     role: str = "student"
 
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+
 class UserPublic(BaseModel):
     id: int
     name: str
@@ -75,7 +80,7 @@ class LiveClassCreate(BaseModel):
     course_id: int
     topic: str
     description: Optional[str] = None
-    scheduled_at: datetime
+    scheduled_at: Optional[datetime] = None
 
 
 class LiveClassPublic(BaseModel):

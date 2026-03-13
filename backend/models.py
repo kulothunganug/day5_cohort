@@ -50,7 +50,6 @@ class LiveClass(SQLModel, table=True):
     instructor_id: int = Field(foreign_key="user.id")
     topic: str
     description: Optional[str] = None
-    scheduled_at: datetime
 
 
 class ChatMessage(SQLModel, table=True):

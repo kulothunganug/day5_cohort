@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><span id="page-title-browser">Course Editor</span> - LearnHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-content">
+            <a href="instructor.html" class="brand">LearnHub Instructor</a>
+            <div class="nav-links">
+                <span id="user-name">Loading...</span>
+                <button onclick="logout()" class="btn btn-outline">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="flex items-center gap-4 mb-4">
+            <a href="instructor.html" class="btn btn-outline btn-sm">← Back to Dashboard</a>
+            <h1 id="page-heading">Course Editor</h1>
+        </div>
+
+        <div class="grid grid-cols-1 md-grid-cols-2 gap-8">
+            <div class="card">
+                <h2 id="form-title">Course Details</h2>
+                <form id="course-form" class="mt-4">
+                    <div class="form-group">
+                        <label for="title">Course Title</label>
+                        <input type="text" id="title" required placeholder="e.g. Master JavaScript from Scratch">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="6" required placeholder="Describe what students will learn..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price (INR)</label>
+                        <input type="number" id="price" required value="499">
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn btn-primary w-full">Save Course</button>
+                </form>
+            </div>
+
+            <div id="lessons-card" class="card hidden" style="grid-column: 1 / -1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2>Course Lessons</h2>
+                    <button onclick="addEmptyLessonRow()" class="btn btn-outline btn-sm">+ Add New Lesson</button>
+                </div>
+                <div class="table-container">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="text-align: left; padding: 0.5rem; width: 80px;">Order</th>
+                                <th style="text-align: left; padding: 0.5rem;">Lesson Title</th>
+                                <th style="text-align: left; padding: 0.5rem;">YouTube Video URL</th>
+                                <th style="text-align: right; padding: 0.5rem; width: 150px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lessons-tbody">
+                            <!-- Lesson rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Removed Lesson Modal as we are now doing inline editing -->
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/course-form.js"></script>
+</body>
+</html>

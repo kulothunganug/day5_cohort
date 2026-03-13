@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard - LearnHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-content">
+            <a href="instructor.html" class="brand">LearnHub Instructor</a>
+            <div class="nav-links">
+                <span id="user-name">Loading...</span>
+                <button onclick="logout()" class="btn btn-outline">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center;" class="mb-4">
+            <h2>My Courses</h2>
+            <a href="course-form.html" class="btn btn-primary">Create New Course</a>
+        </div>
+        <div id="courses-list" class="grid grid-cols-1 grid-cols-2 grid-cols-3 mt-4">
+            <!-- Courses will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="lesson-modal" class="modal-overlay hidden">
+        <div class="card" style="width: 100%; max-width: 500px;">
+            <h3>Add Lesson to <span id="modal-course-title"></span></h3>
+            <form id="add-lesson-form" class="mt-4">
+                <input type="hidden" id="modal-course-id">
+                <div class="form-group">
+                    <label for="lesson-title">Lesson Title</label>
+                    <input type="text" id="lesson-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="video-url">Video URL</label>
+                    <input type="url" id="video-url" required>
+                </div>
+                <div class="form-group">
+                    <label for="order">Order</label>
+                    <input type="number" id="order" value="1" required>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">Add Lesson</button>
+                    <button type="button" onclick="closeModal('lesson-modal')" class="btn btn-outline">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="live-modal" class="modal-overlay hidden">
+        <div class="card" style="width: 100%; max-width: 500px;">
+            <h3>Schedule Live Class</h3>
+            <form id="create-live-form" class="mt-4">
+                <input type="hidden" id="live-course-id">
+                <div class="form-group">
+                    <label for="live-topic">Topic</label>
+                    <input type="text" id="live-topic" required>
+                </div>
+                <div class="form-group">
+                    <label for="live-desc">Description</label>
+                    <textarea id="live-desc"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">Schedule</button>
+                    <button type="button" onclick="closeModal('live-modal')" class="btn btn-outline">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/instructor.js"></script>
+</body>
+</html>

@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 
 from auth_utils import create_access_token, hash_password, verify_password
 from dependencies import get_current_user, get_session
 from models import User
-from schemas import Token, UserCreate, UserPublic
+from schemas import Token, UserCreate, UserLogin, UserPublic
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -35,11 +34,11 @@ def register(user_in: UserCreate, session: Session = Depends(get_session)):
 
 @router.post("/login", response_model=Token)
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    user_login: UserLogin,
     session: Session = Depends(get_session),
 ):
-    user = session.exec(select(User).where(User.email == form_data.username)).first()
-    if not user or not verify_password(form_data.password, user.password_hash):
+    user = session.exec(select(User).where(User.email == user_login.email)).first()
+    if not user or not verify_password(user_login.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",

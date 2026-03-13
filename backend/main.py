@@ -5,6 +5,7 @@ load_dotenv()
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel, create_engine
 
 from auth import router as auth_router
@@ -28,8 +29,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
 app.include_router(auth_router)
 app.include_router(courses_router)
 app.include_router(payment_router)
 app.include_router(live_classes_router)
+
+app.mount("/", StaticFiles(directory="static"), name="static")

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - LearnHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-content">
+            <a href="student.html" class="brand">LearnHub</a>
+            <div class="nav-links">
+                <span id="user-name">Loading...</span>
+                <button onclick="logout()" class="btn btn-outline">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Browse Courses</h1>
+        <div id="student-courses-list" class="grid grid-cols-1 grid-cols-2 grid-cols-3 mt-4">
+            <!-- Courses will be loaded here -->
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/student.js"></script>
+</body>
+</html>

@@ -29,7 +29,11 @@ Register a new user (student or instructor).
 
 Authenticate a user and receive an access token.
 
-**Request Body**: `OAuth2PasswordRequestForm` (username/password)
+**Request Body**: `UserLogin` (JSON)
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `email` | string | Email address of the user |
+| `password` | string | Password for the account |
 
 **Response**: `Token`
 ```json
@@ -166,7 +170,6 @@ Verify Razorpay payment signature and enroll user in the course.
 | `course_id` | integer | Associated course ID |
 | `topic` | string | Topic of the live class |
 | `description` | string | Optional description |
-| `scheduled_at` | datetime | Scheduled date and time |
 
 **Response**: `LiveClassPublic`
 
@@ -235,6 +238,5 @@ Real-time chat for live classes.
   "instructor_id": "int",
   "topic": "string",
   "description": "string",
-  "scheduled_at": "datetime"
 }
 ```
