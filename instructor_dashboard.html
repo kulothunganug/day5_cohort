@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instructor Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f9fafb; color: #111827; min-height: 100vh; }
+
+    nav { background: #fff; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #e5e7eb; position: sticky; top: 0; z-index: 50; }
+    nav .logo { font-size: 19px; font-weight: 700; color: #1d4ed8; letter-spacing: -0.3px; }
+    nav .user-info { display: flex; align-items: center; gap: 10px; }
+    nav .user-info span { font-size: 13px; color: #6b7280; }
+    nav .avatar { width: 34px; height: 34px; border-radius: 50%; background: #1d4ed8; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; }
+
+    .container { display: flex; height: calc(100vh - 57px); }
+
+    aside { width: 210px; background: #fff; padding: 18px 10px; border-right: 1.5px solid #e5e7eb; display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+    aside .section-label { font-size: 10px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin: 12px 0 4px 8px; }
+    aside button { background: none; border: none; color: #4b5563; padding: 9px 12px; border-radius: 7px; text-align: left; cursor: pointer; font-size: 13.5px; display: flex; align-items: center; gap: 9px; transition: all 0.15s; width: 100%; }
+    aside button:hover { background: #eff6ff; color: #1d4ed8; }
+    aside button.active { background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+
+    main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    h2 { font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+    .sub { color: #6b7280; font-size: 13px; margin-bottom: 24px; }
+
+    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: #fff; border-radius: 10px; padding: 18px 20px; border: 1.5px solid #e5e7eb; }
+    .stat-card .lbl { font-size: 11.5px; color: #6b7280; margin-bottom: 7px; font-weight: 500; }
+    .stat-card .val { font-size: 26px; font-weight: 700; color: #1d4ed8; }
+    .stat-card .val.dark { color: #111827; }
+
+    .action-row { display: flex; gap: 12px; margin-bottom: 24px; }
+    .btn-blue { background: #1d4ed8; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: background 0.2s; }
+    .btn-blue:hover { background: #1e40af; }
+    .btn-red-outline { background: #fff; color: #dc2626; border: 1.5px solid #dc2626; padding: 10px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: background 0.2s; }
+    .btn-red-outline:hover { background: #fef2f2; }
+    .dot-red { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; animation: blink 1.2s infinite; display:inline-block; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* COURSE CARDS */
+    .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px,1fr)); gap: 16px; }
+    .course-card { background: #fff; border-radius: 10px; border: 1.5px solid #e5e7eb; overflow: hidden; transition: box-shadow 0.2s, border-color 0.2s; }
+    .course-card:hover { border-color: #1d4ed8; box-shadow: 0 4px 16px rgba(29,78,216,0.09); }
+
+    .course-thumb {
+      height: 108px;
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .course-thumb .thumb-title {
+      color: #fff; font-size: 13px; font-weight: 600;
+      padding: 0 16px; text-align: center; line-height: 1.4;
+      max-width: 100%; word-break: break-word;
+    }
+    .price-badge { position: absolute; top: 10px; right: 10px; background: #fff; color: #1d4ed8; font-size: 11.5px; padding: 3px 10px; border-radius: 20px; font-weight: 700; border: 1px solid #bfdbfe; }
+
+    .course-info { padding: 14px; }
+    .course-info h4 { font-size: 14.5px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+    .course-info .meta { font-size: 11.5px; color: #9ca3af; margin-bottom: 12px; }
+    .course-actions { display: flex; gap: 7px; }
+    .btn-sm { flex: 1; padding: 8px 6px; border-radius: 7px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+    .btn-preview { background: #1d4ed8; color: #fff; }
+    .btn-preview:hover { background: #1e40af; }
+    .btn-edit-sm { background: #f3f4f6; color: #374151; border: 1.5px solid #e5e7eb !important; }
+    .btn-edit-sm:hover { background: #e5e7eb; }
+
+    /* MODALS */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.38); z-index: 100; align-items: center; justify-content: center; }
+    .overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 14px; width: 520px; max-width: 95vw; border: 1.5px solid #e5e7eb; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.13); max-height: 90vh; overflow-y: auto; }
+    .modal h3 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+    .modal .msub { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+    .fg { margin-bottom: 14px; }
+    .fg label { display: block; font-size: 12.5px; color: #374151; margin-bottom: 5px; font-weight: 600; }
+    .fg input, .fg textarea, .fg select { width: 100%; background: #fff; border: 1.5px solid #d1d5db; color: #111827; padding: 10px 13px; border-radius: 7px; font-size: 13.5px; outline: none; transition: border-color 0.2s; font-family: inherit; }
+    .fg input:focus, .fg textarea:focus, .fg select:focus { border-color: #1d4ed8; }
+    .fg textarea { resize: vertical; min-height: 72px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
+    .btn-cancel { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; cursor: pointer; }
+    .btn-cancel:hover { background: #e5e7eb; }
+    .btn-save { background: #1d4ed8; color: #fff; border: none; padding: 9px 22px; border-radius: 7px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+    .btn-save:hover { background: #1e40af; }
+    .btn-del { background: #dc2626; color: #fff; border: none; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+    .btn-del:hover { background: #b91c1c; }
+
+    /* DELETE CONFIRM */
+    .confirm-modal { background: #fff; border-radius: 14px; width: 380px; max-width: 95vw; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.13); border: 1.5px solid #e5e7eb; text-align: center; }
+    .confirm-modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .confirm-modal p { font-size: 13.5px; color: #6b7280; margin-bottom: 22px; line-height: 1.5; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+    /* LIVE */
+    .live-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; height: calc(100vh - 220px); }
+    .live-stage { background: #fff; border-radius: 10px; border: 2px dashed #bfdbfe; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px; }
+    .live-stage h3 { font-size: 17px; color: #374151; font-weight: 600; }
+    .live-stage p { font-size: 13px; color: #9ca3af; text-align: center; max-width: 260px; line-height: 1.6; }
+    .live-badge { display: inline-flex; align-items: center; gap: 6px; background: #fef2f2; color: #dc2626; padding: 5px 13px; border-radius: 20px; font-size: 12.5px; font-weight: 600; border: 1px solid #fecaca; }
+
+    .chat-panel { background: #fff; border-radius: 10px; border: 1.5px solid #e5e7eb; display: flex; flex-direction: column; overflow: hidden; }
+    .chat-header { padding: 13px 16px; border-bottom: 1.5px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+    .chat-header h4 { font-size: 14px; font-weight: 600; color: #111827; }
+    .online-badge { font-size: 11px; background: #ecfdf5; color: #059669; padding: 3px 10px; border-radius: 20px; border: 1px solid #a7f3d0; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 11px; }
+    .chat-messages::-webkit-scrollbar { width: 3px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #e5e7eb; }
+    .msg { display: flex; flex-direction: column; gap: 3px; }
+    .msg .sender { font-size: 11px; font-weight: 600; color: #1d4ed8; }
+    .msg .sender.student { color: #0891b2; }
+    .msg .bubble { background: #f3f4f6; color: #111827; padding: 9px 12px; border-radius: 0 9px 9px 9px; font-size: 13px; line-height: 1.5; max-width: 92%; border: 1px solid #e5e7eb; }
+    .msg.own { align-items: flex-end; }
+    .msg.own .bubble { background: #eff6ff; border-radius: 9px 0 9px 9px; border-color: #bfdbfe; }
+    .chat-input-row { padding: 11px; border-top: 1.5px solid #e5e7eb; display: flex; gap: 8px; }
+    .chat-input-row input { flex: 1; background: #f9fafb; border: 1.5px solid #e5e7eb; color: #111827; padding: 9px 13px; border-radius: 7px; font-size: 13.5px; outline: none; font-family: inherit; }
+    .chat-input-row input:focus { border-color: #1d4ed8; background: #fff; }
+    .btn-send { background: #1d4ed8; color: #fff; border: none; padding: 9px 14px; border-radius: 7px; font-size: 16px; cursor: pointer; }
+    .btn-send:hover { background: #1e40af; }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; border: 1.5px solid #e5e7eb; }
+    th { background: #f9fafb; padding: 11px 16px; text-align: left; font-size: 12px; color: #6b7280; font-weight: 600; border-bottom: 1.5px solid #e5e7eb; }
+    td { padding: 12px 16px; font-size: 13.5px; color: #374151; border-bottom: 1px solid #f3f4f6; }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #ecfdf5; color: #059669; }
+    .badge-blue { background: #eff6ff; color: #1d4ed8; }
+
+    .section-title { font-size: 13.5px; font-weight: 600; color: #374151; margin-bottom: 14px; }
+    .empty { text-align: center; padding: 56px 20px; color: #9ca3af; font-size: 14px; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 22px; right: 22px; z-index: 999; background: #fff; border: 1.5px solid #1d4ed8; color: #111827; padding: 11px 18px; border-radius: 9px; font-size: 13.5px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); transform: translateY(70px); opacity: 0; transition: all 0.28s; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { border-color: #dc2626; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">LearnHub</div>
+  <div class="user-info">
+    <span>Instructor</span>
+    <div class="avatar">D</div>
+  </div>
+</nav>
+
+<div class="container">
+  <aside>
+    <div class="section-label">Menu</div>
+    <button class="active" onclick="showPage('overview',this)">Overview</button>
+    <button onclick="showPage('courses',this)">My Courses</button>
+    <button id="live-nav-btn" onclick="showPage('live',this)">Live Class</button>
+    <div class="section-label">Reports</div>
+    <button onclick="showPage('earnings',this)">Earnings</button>
+    <button onclick="showPage('students',this)">Students</button>
+  </aside>
+
+  <main>
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <h2>Dashboard Overview</h2>
+      <p class="sub">Welcome back, Dheena — here is your summary.</p>
+      <div class="stats">
+        <div class="stat-card"><div class="lbl">Total Courses</div><div class="val" id="stat-courses">0</div></div>
+        <div class="stat-card"><div class="lbl">Students Enrolled</div><div class="val dark">128</div></div>
+        <div class="stat-card"><div class="lbl">Total Revenue</div><div class="val" id="stat-revenue">0</div></div>
+        <div class="stat-card"><div class="lbl">Live Sessions</div><div class="val dark">12</div></div>
+      </div>
+      <div class="action-row">
+        <button class="btn-blue" onclick="openAddModal()">+ Add Course</button>
+        <button class="btn-red-outline" onclick="document.getElementById('live-nav-btn').click()">
+          <span class="dot-red"></span> Start Live Class
+        </button>
+      </div>
+      <p class="section-title">Recent Courses</p>
+      <div class="courses-grid" id="overview-courses"></div>
+    </div>
+
+    <!-- MY COURSES -->
+    <div class="page" id="page-courses">
+      <h2>My Courses</h2>
+      <p class="sub">Manage all your published and draft courses.</p>
+      <div class="action-row">
+        <button class="btn-blue" onclick="openAddModal()">+ Add Course</button>
+      </div>
+      <div class="courses-grid" id="all-courses"></div>
+    </div>
+
+    <!-- LIVE CLASS -->
+    <div class="page" id="page-live">
+      <h2>Live Class</h2>
+      <p class="sub">Broadcast your session — live chat is active for all participants.</p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+        <div class="live-badge"><span class="dot-red"></span> LIVE NOW</div>
+        <span style="font-size:13px;color:#9ca3af;font-variant-numeric:tabular-nums;" id="live-timer">00:00:00</span>
+      </div>
+      <div class="live-layout">
+        <div class="live-stage">
+          <h3>Live Stream Area</h3>
+          <p>Your broadcast will appear here once connected. Use OBS or any streaming software to go live.</p>
+          <button class="btn-blue" style="margin-top:14px;">Connect Stream</button>
+        </div>
+        <div class="chat-panel">
+          <div class="chat-header">
+            <h4>Live Chat</h4>
+            <span class="online-badge" id="online-count">3 online</span>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            <div class="msg"><span class="sender student">Priya</span><div class="bubble">Ready for the class!</div></div>
+            <div class="msg"><span class="sender student">Ravi</span><div class="bubble">Can't wait to start!</div></div>
+            <div class="msg own"><span class="sender">You (Instructor)</span><div class="bubble">Starting in 2 minutes!</div></div>
+          </div>
+          <div class="chat-input-row">
+            <input id="chat-input" type="text" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()" />
+            <button class="btn-send" onclick="sendMsg()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EARNINGS -->
+    <div class="page" id="page-earnings">
+      <h2>Earnings</h2>
+      <p class="sub">Revenue breakdown across all your courses.</p>
+      <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+        <div class="stat-card"><div class="lbl">This Month</div><div class="val">8,200</div></div>
+        <div class="stat-card"><div class="lbl">All Time</div><div class="val dark">24,500</div></div>
+        <div class="stat-card"><div class="lbl">Withdrawable</div><div class="val dark">6,800</div></div>
+      </div>
+      <p class="section-title">Recent Transactions</p>
+      <table>
+        <thead><tr><th>Student</th><th>Course</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Priya R.</td><td>Flutter Full Course</td><td>499</td><td>Mar 12, 2026</td><td><span class="badge badge-green">Paid</span></td></tr>
+          <tr><td>Ravi K.</td><td>React for Beginners</td><td>299</td><td>Mar 11, 2026</td><td><span class="badge badge-green">Paid</span></td></tr>
+          <tr><td>Sneha M.</td><td>Node.js APIs</td><td>399</td><td>Mar 10, 2026</td><td><span class="badge badge-blue">Processing</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="page" id="page-students">
+      <h2>Students</h2>
+      <p class="sub">128 students enrolled across all courses.</p>
+      <table>
+        <thead><tr><th>Name</th><th>Course</th><th>Enrolled On</th><th>Progress</th></tr></thead>
+        <tbody>
+          <tr><td>Priya R.</td><td>Flutter Full Course</td><td>Mar 12, 2026</td><td><span class="badge badge-green">72%</span></td></tr>
+          <tr><td>Ravi K.</td><td>React for Beginners</td><td>Mar 11, 2026</td><td><span class="badge badge-blue">45%</span></td></tr>
+          <tr><td>Arun S.</td><td>Node.js APIs</td><td>Mar 9, 2026</td><td><span class="badge badge-green">90%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<!-- ADD / EDIT COURSE MODAL -->
+<div class="overlay" id="course-modal">
+  <div class="modal">
+    <h3 id="modal-title">Add New Course</h3>
+    <p class="msub" id="modal-sub">Fill in the details to publish a new course.</p>
+    <div class="fg">
+      <label>Course Title *</label>
+      <input id="f-title" type="text" placeholder="e.g. Flutter for Beginners" />
+    </div>
+    <div class="fg">
+      <label>Description</label>
+      <textarea id="f-desc" placeholder="What will students learn?"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="fg">
+        <label>Price (INR) *</label>
+        <input id="f-price" type="number" placeholder="e.g. 499" min="0" />
+      </div>
+      <div class="fg">
+        <label>Category</label>
+        <select id="f-cat">
+          <option>Development</option><option>Design</option>
+          <option>Business</option><option>Data Science</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <label>YouTube Lesson Link *</label>
+      <input id="f-yt" type="text" placeholder="https://www.youtube.com/watch?v=..." />
+    </div>
+    <div class="form-row">
+      <div class="fg">
+        <label>Duration</label>
+        <input id="f-dur" type="text" placeholder="e.g. 4h 30m" />
+      </div>
+      <div class="fg">
+        <label>Level</label>
+        <select id="f-level">
+          <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('course-modal')">Cancel</button>
+      <button id="modal-del-btn" class="btn-del" style="display:none;" onclick="triggerDeleteFromEdit()">Delete Course</button>
+      <button class="btn-save" id="modal-save-btn" onclick="saveCourse()">Add Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="overlay" id="confirm-modal">
+  <div class="confirm-modal">
+    <h3>Delete Course</h3>
+    <p id="confirm-text">This course will be permanently deleted and cannot be recovered.</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn-del" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let courses = [
+    { title: 'Flutter Full Course', desc: 'Build complete Flutter apps from scratch.', price: 499, cat: 'Development', yt: 'https://www.youtube.com/watch?v=VPvVD8t02U8', dur: '8h', level: 'Beginner' },
+    { title: 'React for Beginners', desc: 'Modern React hooks, state, and components.', price: 299, cat: 'Development', yt: 'https://www.youtube.com/watch?v=bMknfKXIFA8', dur: '6h', level: 'Beginner' },
+    { title: 'Node.js APIs', desc: 'Build RESTful APIs with Node.js and Express.', price: 399, cat: 'Development', yt: 'https://www.youtube.com/watch?v=Oe421EPjeBE', dur: '5h', level: 'Intermediate' },
+  ];
+
+  let editIdx = null;
+  let deleteIdx = null;
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderCard(c, idx) {
+    return '<div class="course-card">' +
+      '<div class="course-thumb">' +
+        '<span class="thumb-title">' + escHtml(c.title) + '</span>' +
+        '<span class="price-badge">INR ' + c.price + '</span>' +
+      '</div>' +
+      '<div class="course-info">' +
+        '<h4>' + escHtml(c.title) + '</h4>' +
+        '<div class="meta">' + escHtml(c.cat) + ' &nbsp;|&nbsp; ' + escHtml(c.level) + ' &nbsp;|&nbsp; ' + escHtml(c.dur || 'N/A') + '</div>' +
+        '<div class="course-actions">' +
+          '<button class="btn-sm btn-preview" onclick="previewCourse(' + idx + ')">Preview</button>' +
+          '<button class="btn-sm btn-edit-sm" onclick="openEditModal(' + idx + ')">Edit</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderAll() {
+    const html = courses.length
+      ? courses.map((c,i) => renderCard(c,i)).join('')
+      : '<div class="empty">No courses yet. Click Add Course to get started.</div>';
+    document.getElementById('overview-courses').innerHTML = html;
+    document.getElementById('all-courses').innerHTML = html;
+    document.getElementById('stat-courses').textContent = courses.length;
+    const rev = courses.reduce((a,c) => a + c.price, 0);
+    document.getElementById('stat-revenue').textContent = 'INR ' + rev.toLocaleString('en-IN');
+  }
+
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+    if (name === 'live') startTimer();
+  }
+
+  // ADD MODAL
+  function openAddModal() {
+    editIdx = null;
+    document.getElementById('modal-title').textContent = 'Add New Course';
+    document.getElementById('modal-sub').textContent = 'Fill in the details to publish a new course.';
+    document.getElementById('modal-save-btn').textContent = 'Add Course';
+    document.getElementById('modal-del-btn').style.display = 'none';
+    ['f-title','f-desc','f-yt','f-dur'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-price').value = '';
+    document.getElementById('f-cat').selectedIndex = 0;
+    document.getElementById('f-level').selectedIndex = 0;
+    openModal('course-modal');
+  }
+
+  // EDIT MODAL — same dialog, pre-filled
+  function openEditModal(idx) {
+    editIdx = idx;
+    const c = courses[idx];
+    document.getElementById('modal-title').textContent = 'Edit Course';
+    document.getElementById('modal-sub').textContent = 'Modify the course details below.';
+    document.getElementById('modal-save-btn').textContent = 'Save Changes';
+    document.getElementById('modal-del-btn').style.display = 'inline-flex';
+    document.getElementById('f-title').value = c.title;
+    document.getElementById('f-desc').value = c.desc || '';
+    document.getElementById('f-price').value = c.price;
+    document.getElementById('f-cat').value = c.cat;
+    document.getElementById('f-yt').value = c.yt;
+    document.getElementById('f-dur').value = c.dur || '';
+    document.getElementById('f-level').value = c.level;
+    openModal('course-modal');
+  }
+
+  function saveCourse() {
+    const title = document.getElementById('f-title').value.trim();
+    const yt = document.getElementById('f-yt').value.trim();
+    const price = document.getElementById('f-price').value;
+    if (!title) { showToast('Course title is required', true); return; }
+    if (!yt) { showToast('YouTube link is required', true); return; }
+
+    const data = {
+      title,
+      desc: document.getElementById('f-desc').value.trim(),
+      price: parseInt(price) || 0,
+      cat: document.getElementById('f-cat').value,
+      yt,
+      dur: document.getElementById('f-dur').value.trim() || 'N/A',
+      level: document.getElementById('f-level').value,
+    };
+
+    if (editIdx !== null) {
+      courses[editIdx] = data;
+      showToast('Course updated successfully');
+    } else {
+      courses.push(data);
+      showToast('Course added successfully');
+    }
+    renderAll();
+    closeModal('course-modal');
+  }
+
+  // DELETE from edit modal
+  function triggerDeleteFromEdit() {
+    if (editIdx === null) return;
+    deleteIdx = editIdx;
+    document.getElementById('confirm-text').textContent =
+      'Delete "' + escHtml(courses[deleteIdx].title) + '"? This cannot be undone.';
+    closeModal('course-modal');
+    openModal('confirm-modal');
+  }
+
+  function confirmDelete() {
+    if (deleteIdx === null) return;
+    const name = courses[deleteIdx].title;
+    courses.splice(deleteIdx, 1);
+    deleteIdx = null;
+    renderAll();
+    closeModal('confirm-modal');
+    showToast('"' + name + '" deleted');
+  }
+
+  // PREVIEW — opens YouTube link in new tab
+  function previewCourse(idx) {
+    const url = courses[idx].yt;
+    if (!url) { showToast('No YouTube link attached to this course', true); return; }
+    window.open(url, '_blank');
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // Close overlay on background click
+  document.querySelectorAll('.overlay').forEach(ov => {
+    ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+  });
+
+  // LIVE CHAT
+  const chatNames = ['Priya','Ravi','Arun','Sneha','Karthik','Divya'];
+  const chatMsgs = ['Great explanation!','Can you repeat that?','Got it, thanks!','Very helpful!','When is next class?','Amazing!'];
+
+  function sendMsg() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    appendMsg('own', 'You (Instructor)', text);
+    input.value = '';
+    setTimeout(() => {
+      const n = chatNames[Math.floor(Math.random() * chatNames.length)];
+      appendMsg('', n, chatMsgs[Math.floor(Math.random() * chatMsgs.length)]);
+    }, 900 + Math.random() * 1400);
+  }
+
+  function appendMsg(cls, sender, text) {
+    const box = document.getElementById('chat-messages');
+    const isStudent = cls !== 'own';
+    const div = document.createElement('div');
+    div.className = 'msg ' + cls;
+    div.innerHTML = '<span class="sender ' + (isStudent ? 'student' : '') + '">' + escHtml(sender) + '</span>' +
+                    '<div class="bubble">' + escHtml(text) + '</div>';
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  let timerInt = null;
+  function startTimer() {
+    if (timerInt) return;
+    const start = Date.now();
+    timerInt = setInterval(() => {
+      const s = Math.floor((Date.now() - start) / 1000);
+      document.getElementById('live-timer').textContent =
+        String(Math.floor(s/3600)).padStart(2,'0') + ':' +
+        String(Math.floor((s%3600)/60)).padStart(2,'0') + ':' +
+        String(s%60).padStart(2,'0');
+    }, 1000);
+    setInterval(() => {
+      document.getElementById('online-count').textContent = (3 + Math.floor(Math.random()*9)) + ' online';
+    }, 5000);
+  }
+
+  function showToast(msg, isErr) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isErr ? ' error' : '');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  renderAll();
+</script>
+</body>
+</html>
