@@ -1,6 +1,4 @@
 // ---------------- DATA ----------------
-
-// Courses array with YouTube embed links
 let courses = [
     {title:"Mathematics 101", desc:"Basic Algebra concepts", instructor:"Mr. Ravi", video:"https://www.youtube.com/embed/Q-dx75ErGAA"},
     {title:"Physics 101", desc:"Mechanics fundamentals", instructor:"Mrs. Priya", video:"https://www.youtube.com/embed/b1t41Q3xRM8"},
@@ -10,7 +8,6 @@ let courses = [
     {title:"English 101", desc:"Grammar and Composition", instructor:"Mrs. Anitha", video:"https://www.youtube.com/embed/cqTa2aV8LTY"}
 ];
 
-// Assignments with details
 let assignments = [
     {title:"Algebra Homework", course:"Mathematics 101", due:"2026-03-20", details:"Solve 10 algebra problems from chapter 1. Submit as PDF."},
     {title:"Mechanics Lab", course:"Physics 101", due:"2026-03-25", details:"Complete the mechanics lab experiment. Upload lab report."},
@@ -19,7 +16,6 @@ let assignments = [
     {title:"Programming Assignment", course:"Computer Science 101", due:"2026-03-30", details:"Build a small JS calculator and submit code files."}
 ];
 
-// Progress
 let progressData = [
     {course:"Mathematics 101", progress:50},
     {course:"Physics 101", progress:30},
@@ -29,7 +25,6 @@ let progressData = [
     {course:"English 101", progress:60}
 ];
 
-// Quizzes
 let quizzes = {
     "Algebra Homework":[
         {question:"What is 2 + 3?", options:["4","5","6","7"], answer:"5"},
@@ -53,7 +48,6 @@ let quizzes = {
     ]
 };
 
-// Courses available to buy
 let availableCourses = [
     {title:"Mathematics 101", price:1999},
     {title:"Physics 101", price:2499},
@@ -103,10 +97,10 @@ purchaseModal.innerHTML=`<div style="position:relative;width:90%;max-width:400px
 <span id="closePurchaseModal" style="position:absolute;top:10px;right:15px;font-size:28px;cursor:pointer;">&times;</span>
 <h3 id="purchaseCourseTitle"></h3>
 <form id="purchaseForm">
-<label>Name:</label><input type="text" id="customerName" required style="width:100%;padding:5px;margin:5px 0;">
-<label>Email:</label><input type="email" id="customerEmail" required style="width:100%;padding:5px;margin:5px 0;">
-<label>Phone:</label><input type="tel" id="customerPhone" required style="width:100%;padding:5px;margin:5px 0;">
-<button type="submit" style="padding:8px 12px;background:#28a745;color:white;border:none;border-radius:4px;margin-top:10px;cursor:pointer;">Pay ₹<span id="coursePrice"></span></button>
+<label>Name:</label><input type="text" id="customerName" required>
+<label>Email:</label><input type="email" id="customerEmail" required>
+<label>Phone:</label><input type="tel" id="customerPhone" required>
+<button type="submit">Pay ₹<span id="coursePrice"></span></button>
 </form></div>`;
 document.body.appendChild(purchaseModal);
 document.getElementById("closePurchaseModal").onclick = ()=>{purchaseModal.style.display="none";};
@@ -121,65 +115,33 @@ assignmentModal.style.left="0";
 assignmentModal.style.width="100%";
 assignmentModal.style.height="100%";
 assignmentModal.style.background="rgba(0,0,0,0.8)";
-assignmentModal.style.justifyContent="center";
-assignmentModal.style.alignItems="center";
-assignmentModal.style.zIndex="1000";
+assignmentModal.style.justifyContent = "center";
+assignmentModal.style.alignItems = "center";
+assignmentModal.style.zIndex = "1000";
 assignmentModal.innerHTML=`<div style="position:relative;width:80%;max-width:600px;background:#fff;border-radius:8px;padding:20px;">
 <span id="closeAssignmentModal" style="position:absolute;top:10px;right:15px;font-size:28px;cursor:pointer;">&times;</span>
 <div id="assignmentModalContent"></div></div>`;
 document.body.appendChild(assignmentModal);
 document.getElementById("closeAssignmentModal").onclick = ()=>{assignmentModal.style.display="none";document.getElementById("assignmentModalContent").innerHTML="";};
-assignmentModal.onclick=(e)=>{if(e.target===assignmentModal){assignmentModal.style.display="none";document.getElementById("assignmentModalContent").innerHTML="";}};
-
-// ---------- QUIZ MODAL ----------
-let quizModal = document.createElement("div");
-quizModal.id="quizModal";
-quizModal.style.display="none";
-quizModal.style.position="fixed";
-quizModal.style.top="0";
-quizModal.style.left="0";
-quizModal.style.width="100%";
-quizModal.style.height="100%";
-quizModal.style.background="rgba(0,0,0,0.9)";
-quizModal.style.justifyContent="center";
-quizModal.style.alignItems="center";
-quizModal.style.zIndex="10000";
-quizModal.style.overflow="auto";
-quizModal.innerHTML = `<div id="quizContent" style="background:#fff;padding:30px;max-width:800px;width:90%;border-radius:10px;position:relative;">
-<span id="closeQuizModal" style="position:absolute; top:10px; right:15px; font-size:28px; cursor:pointer;">&times;</span>
-<div id="quizInnerContent"></div>
-</div>`;
-document.body.appendChild(quizModal);
-document.getElementById("closeQuizModal").onclick = ()=>{quizModal.style.display="none";};
 
 // ---------- SHOW SECTION ----------
 function showSection(section){
     contentDiv.innerHTML="";
 
+    // GRID STYLING: 2-IN-A-ROW
+    const gridStyle = "display:grid;grid-template-columns:repeat(2,1fr);gap:20px;";
+
     // Courses
     if(section==="courses"){
         if(courses.length===0){contentDiv.innerHTML="<p>No enrolled courses yet.</p>";return;}
         let grid=document.createElement("div");
-        grid.style.display="grid";
-        grid.style.gridTemplateColumns="repeat(auto-fit,minmax(300px,1fr))";
-        grid.style.gap="15px";
+        grid.style.cssText=gridStyle;
         courses.forEach(course=>{
             let card=document.createElement("div");
             card.classList.add("card");
-            card.style.cursor="pointer";
-            card.style.padding="15px";
-            card.style.borderRadius="5px";
-            card.style.boxShadow="0 2px 5px rgba(0,0,0,0.1)";
-            card.style.background="#fff";
-            card.style.transition="transform 0.2s";
-            card.onmouseover=()=>{card.style.transform="scale(1.03)";};
-            card.onmouseleave=()=>{card.style.transform="scale(1)";};
             card.innerHTML=`<h3>${course.title}</h3><p>${course.desc}</p><p><b>Instructor:</b> ${course.instructor}</p>
             <button class="playBtn">▶ Play Video</button>`;
-            card.querySelector(".playBtn").addEventListener("click",()=>{
-                videoModal.style.display="flex";
-                document.getElementById("modalContent").innerHTML=`<iframe width="100%" height="480" src="${course.video}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
-            });
+            card.querySelector(".playBtn").addEventListener("click",()=>{videoModal.style.display="flex";document.getElementById("modalContent").innerHTML=`<iframe width="100%" height="380" src="${course.video}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;});
             grid.appendChild(card);
         });
         contentDiv.appendChild(grid);
@@ -189,22 +151,26 @@ function showSection(section){
     if(section==="assignments"){
         if(assignments.length===0){contentDiv.innerHTML="<p>No assignments yet.</p>";return;}
         let grid=document.createElement("div");
-        grid.style.display="grid";
-        grid.style.gridTemplateColumns="repeat(auto-fit,minmax(300px,1fr))";
-        grid.style.gap="15px";
+        grid.style.cssText=gridStyle;
         assignments.forEach(assign=>{
             let card=document.createElement("div");
             card.classList.add("card");
-            card.style.cursor="pointer";
-            card.style.padding="15px";
-            card.style.borderRadius="5px";
-            card.style.boxShadow="0 2px 5px rgba(0,0,0,0.1)";
-            card.style.background="#fff";
-            card.style.transition="transform 0.2s";
-            card.onmouseover=()=>{card.style.transform="scale(1.03)";};
-            card.onmouseleave=()=>{card.style.transform="scale(1)";};
             card.innerHTML=`<h3>${assign.title}</h3><p><b>Course:</b> ${assign.course}</p><p><b>Due:</b> ${assign.due}</p>
-                              <button style="margin-top:10px;" onclick="startQuizModal('${assign.title}')">Start Quiz</button>`;
+                              <button onclick="startQuizModal('${assign.title}')">Start Quiz</button>`;
+            grid.appendChild(card);
+        });
+        contentDiv.appendChild(grid);
+    }
+
+    // Buy Courses
+    if(section==="buy"){
+        let grid=document.createElement("div");
+        grid.style.cssText=gridStyle;
+        availableCourses.forEach(course=>{
+            let card=document.createElement("div");
+            card.classList.add("card");
+            card.innerHTML=`<h3>${course.title}</h3><p><b>Price:</b> ₹${course.price}</p>
+            <button class="buy-btn" onclick="openPurchaseForm('${course.title}', ${course.price})">Buy Now</button>`;
             grid.appendChild(card);
         });
         contentDiv.appendChild(grid);
@@ -214,36 +180,12 @@ function showSection(section){
     if(section==="progress"){
         if(progressData.length===0){contentDiv.innerHTML="<p>No progress available.</p>";return;}
         let grid=document.createElement("div");
-        grid.style.display="grid";
-        grid.style.gridTemplateColumns="repeat(auto-fit,minmax(250px,1fr))";
-        grid.style.gap="15px";
+        grid.style.cssText=gridStyle;
         progressData.forEach(p=>{
             let card=document.createElement("div");
             card.classList.add("card");
             card.innerHTML=`<h3>${p.course}</h3><p><b>Progress:</b> ${p.progress}%</p>
-            <div style="background:#e0e0e0;border-radius:4px;height:15px;margin-top:5px;">
-            <div style="width:${p.progress}%;background:#4caf50;height:100%;border-radius:4px;"></div></div>
-            <p style="font-size:12px;color:#555;margin-top:5px;">${p.progress<50?"Keep Going!":"Good Job!"}</p>`;
-            grid.appendChild(card);
-        });
-        contentDiv.appendChild(grid);
-    }
-
-    // Buy Courses
-    if(section==="buy"){
-        let grid=document.createElement("div");
-        grid.style.display="grid";
-        grid.style.gridTemplateColumns="repeat(auto-fit,minmax(250px,1fr))";
-        grid.style.gap="15px";
-        availableCourses.forEach(course=>{
-            let card=document.createElement("div");
-            card.classList.add("card");
-            card.style.padding="15px";
-            card.style.borderRadius="5px";
-            card.style.boxShadow="0 2px 5px rgba(0,0,0,0.1)";
-            card.style.background="#fff";
-            card.innerHTML=`<h3>${course.title}</h3><p><b>Price:</b> ₹${course.price}</p>
-            <button class="buy-btn" onclick="openPurchaseForm('${course.title}', ${course.price})">Buy Now</button>`;
+            <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%"></div></div>`;
             grid.appendChild(card);
         });
         contentDiv.appendChild(grid);
@@ -261,26 +203,11 @@ function openPurchaseForm(title, price){
         let name=document.getElementById("customerName").value;
         let email=document.getElementById("customerEmail").value;
         let phone=document.getElementById("customerPhone").value;
-        let amount = price * 100; // in paise
-
-        var options = {
-            "key":"YOUR_RAZORPAY_KEY",
-            "amount": amount,
-            "currency":"INR",
-            "name":"EduStud",
-            "description":title,
-            "handler":function(response){
-                alert("Payment Successful! Payment ID: "+response.razorpay_payment_id);
-                purchaseModal.style.display="none";
-                courses.push({title:title,desc:"Newly purchased course",instructor:"TBA",video:"https://www.youtube.com/embed/dQw4w9WgXcQ"});
-                progressData.push({course:title,progress:0});
-                showSection('courses');
-            },
-            "prefill":{"name":name,"email":email,"contact":phone},
-            "theme":{"color":"#007bff"}
-        };
-        var rzp1=new Razorpay(options);
-        rzp1.open();
+        let amount = price * 100;
+        alert(`Payment simulation: ${title} ₹${price}`);
+        purchaseModal.style.display="none";
+        courses.push({title:title,desc:"Newly purchased course",instructor:"TBA",video:"https://www.youtube.com/embed/dQw4w9WgXcQ"});
+        showSection('courses');
     };
 }
 
@@ -288,38 +215,34 @@ function openPurchaseForm(title, price){
 function startQuizModal(assignmentTitle){
     let quizData = quizzes[assignmentTitle];
     if(!quizData || quizData.length===0){alert("No quiz available."); return;}
-    quizData = quizData.slice(0,10);
     let score=0;
     let current=0;
-    quizModal.style.display="flex";
-    let quizInnerContent=document.getElementById("quizInnerContent");
+    assignmentModal.style.display="flex";
+    let modalContent = document.getElementById("assignmentModalContent");
 
     function showQuestion(){
         let q = quizData[current];
-        quizInnerContent.innerHTML = `<h3>Question ${current+1} of ${quizData.length}</h3><p>${q.question}</p>
-                                      <div id="quizOptions"></div>
-                                      <button id="nextQuizBtn" style="margin-top:10px;">Next</button>`;
+        modalContent.innerHTML = `<h3>Question ${current+1} of ${quizData.length}</h3>
+                                  <p>${q.question}</p>
+                                  <div id="quizOptions"></div>
+                                  <button id="nextQuizBtn">Next</button>`;
         let optionsDiv = document.getElementById("quizOptions");
         q.options.forEach(opt=>{
-            let btn = document.createElement("button");
-            btn.textContent = opt;
+            let btn=document.createElement("button");
+            btn.textContent=opt;
             btn.style.display="block";
             btn.style.margin="5px 0";
-            btn.style.padding="5px 10px";
-            btn.onclick = ()=>{
+            btn.onclick=()=>{
                 if(opt===q.answer) score++;
                 Array.from(optionsDiv.children).forEach(b=>b.disabled=true);
                 btn.style.background=(opt===q.answer)?"lightgreen":"lightcoral";
             };
             optionsDiv.appendChild(btn);
         });
-
-        document.getElementById("nextQuizBtn").onclick = ()=>{
+        document.getElementById("nextQuizBtn").onclick=()=>{
             current++;
             if(current<quizData.length) showQuestion();
-            else quizInnerContent.innerHTML = `<h2>Quiz Completed!</h2>
-                                               <p>Your Score: ${score} / ${quizData.length}</p>
-                                               <button onclick="quizModal.style.display='none'">Close</button>`;
+            else modalContent.innerHTML=`<h2>Quiz Completed!</h2><p>Score: ${score} / ${quizData.length}</p><button onclick="assignmentModal.style.display='none'">Close</button>`;
         };
     }
     showQuestion();
