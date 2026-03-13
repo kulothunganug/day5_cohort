@@ -1,3 +1,9 @@
+How to run
+
+1. Install uv
+2. `uv run fastapi dev` to run the server
+3. Goto `http://localhost:8000/index.html`
+
 
 # Online Course Marketplace
 
