@@ -86,26 +86,6 @@ document.body.appendChild(videoModal);
 document.getElementById("closeVideoModal").onclick = ()=>{videoModal.style.display="none";document.getElementById("modalContent").innerHTML="";};
 videoModal.onclick=(e)=>{if(e.target===videoModal){videoModal.style.display="none";document.getElementById("modalContent").innerHTML="";}};
 
-// ---------- ASSIGNMENT MODAL ----------
-let assignmentModal = document.createElement("div");
-assignmentModal.id="assignmentModal";
-assignmentModal.style.display="none";
-assignmentModal.style.position="fixed";
-assignmentModal.style.top="0";
-assignmentModal.style.left="0";
-assignmentModal.style.width="100%";
-assignmentModal.style.height="100%";
-assignmentModal.style.background="rgba(0,0,0,0.8)";
-assignmentModal.style.justifyContent="center";
-assignmentModal.style.alignItems="center";
-assignmentModal.style.zIndex="1000";
-assignmentModal.innerHTML=`<div style="position:relative;width:80%;max-width:600px;background:#fff;border-radius:8px;padding:20px;">
-<span id="closeAssignmentModal" style="position:absolute;top:10px;right:15px;font-size:28px;cursor:pointer;">&times;</span>
-<div id="assignmentModalContent"></div></div>`;
-document.body.appendChild(assignmentModal);
-document.getElementById("closeAssignmentModal").onclick = ()=>{assignmentModal.style.display="none";document.getElementById("assignmentModalContent").innerHTML="";};
-assignmentModal.onclick=(e)=>{if(e.target===assignmentModal){assignmentModal.style.display="none";document.getElementById("assignmentModalContent").innerHTML="";}};
-
 // ---------- PURCHASE MODAL ----------
 let purchaseModal = document.createElement("div");
 purchaseModal.id="purchaseModal";
@@ -130,6 +110,47 @@ purchaseModal.innerHTML=`<div style="position:relative;width:90%;max-width:400px
 </form></div>`;
 document.body.appendChild(purchaseModal);
 document.getElementById("closePurchaseModal").onclick = ()=>{purchaseModal.style.display="none";};
+
+// ---------- ASSIGNMENT MODAL ----------
+let assignmentModal = document.createElement("div");
+assignmentModal.id="assignmentModal";
+assignmentModal.style.display="none";
+assignmentModal.style.position="fixed";
+assignmentModal.style.top="0";
+assignmentModal.style.left="0";
+assignmentModal.style.width="100%";
+assignmentModal.style.height="100%";
+assignmentModal.style.background="rgba(0,0,0,0.8)";
+assignmentModal.style.justifyContent="center";
+assignmentModal.style.alignItems="center";
+assignmentModal.style.zIndex="1000";
+assignmentModal.innerHTML=`<div style="position:relative;width:80%;max-width:600px;background:#fff;border-radius:8px;padding:20px;">
+<span id="closeAssignmentModal" style="position:absolute;top:10px;right:15px;font-size:28px;cursor:pointer;">&times;</span>
+<div id="assignmentModalContent"></div></div>`;
+document.body.appendChild(assignmentModal);
+document.getElementById("closeAssignmentModal").onclick = ()=>{assignmentModal.style.display="none";document.getElementById("assignmentModalContent").innerHTML="";};
+assignmentModal.onclick=(e)=>{if(e.target===assignmentModal){assignmentModal.style.display="none";document.getElementById("assignmentModalContent").innerHTML="";}};
+
+// ---------- QUIZ MODAL ----------
+let quizModal = document.createElement("div");
+quizModal.id="quizModal";
+quizModal.style.display="none";
+quizModal.style.position="fixed";
+quizModal.style.top="0";
+quizModal.style.left="0";
+quizModal.style.width="100%";
+quizModal.style.height="100%";
+quizModal.style.background="rgba(0,0,0,0.9)";
+quizModal.style.justifyContent="center";
+quizModal.style.alignItems="center";
+quizModal.style.zIndex="10000";
+quizModal.style.overflow="auto";
+quizModal.innerHTML = `<div id="quizContent" style="background:#fff;padding:30px;max-width:800px;width:90%;border-radius:10px;position:relative;">
+<span id="closeQuizModal" style="position:absolute; top:10px; right:15px; font-size:28px; cursor:pointer;">&times;</span>
+<div id="quizInnerContent"></div>
+</div>`;
+document.body.appendChild(quizModal);
+document.getElementById("closeQuizModal").onclick = ()=>{quizModal.style.display="none";};
 
 // ---------- SHOW SECTION ----------
 function showSection(section){
@@ -182,12 +203,8 @@ function showSection(section){
             card.style.transition="transform 0.2s";
             card.onmouseover=()=>{card.style.transform="scale(1.03)";};
             card.onmouseleave=()=>{card.style.transform="scale(1)";};
-            card.innerHTML=`<h3>${assign.title}</h3><p><b>Course:</b> ${assign.course}</p><p><b>Due:</b> ${assign.due}</p>`;
-            card.addEventListener("click",()=>{
-                assignmentModal.style.display="flex";
-                document.getElementById("assignmentModalContent").innerHTML=`<h2>${assign.title}</h2><p><b>Course:</b> ${assign.course}</p><p><b>Due Date:</b> ${assign.due}</p><hr><p>${assign.details}</p><button id="startQuizBtn" style="margin-top:10px;">Start Quiz</button>`;
-                document.getElementById("startQuizBtn").addEventListener("click",()=>{startQuiz(assign.title);});
-            });
+            card.innerHTML=`<h3>${assign.title}</h3><p><b>Course:</b> ${assign.course}</p><p><b>Due:</b> ${assign.due}</p>
+                              <button style="margin-top:10px;" onclick="startQuizModal('${assign.title}')">Start Quiz</button>`;
             grid.appendChild(card);
         });
         contentDiv.appendChild(grid);
@@ -221,6 +238,10 @@ function showSection(section){
         availableCourses.forEach(course=>{
             let card=document.createElement("div");
             card.classList.add("card");
+            card.style.padding="15px";
+            card.style.borderRadius="5px";
+            card.style.boxShadow="0 2px 5px rgba(0,0,0,0.1)";
+            card.style.background="#fff";
             card.innerHTML=`<h3>${course.title}</h3><p><b>Price:</b> ₹${course.price}</p>
             <button class="buy-btn" onclick="openPurchaseForm('${course.title}', ${course.price})">Buy Now</button>`;
             grid.appendChild(card);
@@ -251,7 +272,6 @@ function openPurchaseForm(title, price){
             "handler":function(response){
                 alert("Payment Successful! Payment ID: "+response.razorpay_payment_id);
                 purchaseModal.style.display="none";
-                // Add course after payment (frontend only)
                 courses.push({title:title,desc:"Newly purchased course",instructor:"TBA",video:"https://www.youtube.com/embed/dQw4w9WgXcQ"});
                 progressData.push({course:title,progress:0});
                 showSection('courses');
@@ -265,34 +285,42 @@ function openPurchaseForm(title, price){
 }
 
 // ---------- QUIZ FUNCTION ----------
-function startQuiz(assignmentTitle){
+function startQuizModal(assignmentTitle){
     let quizData = quizzes[assignmentTitle];
     if(!quizData || quizData.length===0){alert("No quiz available."); return;}
-    let modalContent=document.getElementById("assignmentModalContent");
+    quizData = quizData.slice(0,10);
     let score=0;
     let current=0;
+    quizModal.style.display="flex";
+    let quizInnerContent=document.getElementById("quizInnerContent");
+
     function showQuestion(){
-        let q=quizData[current];
-        modalContent.innerHTML=`<h3>Question ${current+1} of ${quizData.length}</h3><p>${q.question}</p><div id="optionsContainer"></div><button id="nextBtn" style="margin-top:10px;">Next</button>`;
-        let optionsContainer=document.getElementById("optionsContainer");
+        let q = quizData[current];
+        quizInnerContent.innerHTML = `<h3>Question ${current+1} of ${quizData.length}</h3><p>${q.question}</p>
+                                      <div id="quizOptions"></div>
+                                      <button id="nextQuizBtn" style="margin-top:10px;">Next</button>`;
+        let optionsDiv = document.getElementById("quizOptions");
         q.options.forEach(opt=>{
-            let btn=document.createElement("button");
-            btn.textContent=opt;
+            let btn = document.createElement("button");
+            btn.textContent = opt;
             btn.style.display="block";
             btn.style.margin="5px 0";
             btn.style.padding="5px 10px";
-            btn.addEventListener("click",()=>{
+            btn.onclick = ()=>{
                 if(opt===q.answer) score++;
-                Array.from(optionsContainer.children).forEach(b=>b.disabled=true);
+                Array.from(optionsDiv.children).forEach(b=>b.disabled=true);
                 btn.style.background=(opt===q.answer)?"lightgreen":"lightcoral";
-            });
-            optionsContainer.appendChild(btn);
+            };
+            optionsDiv.appendChild(btn);
         });
-        document.getElementById("nextBtn").addEventListener("click",()=>{
+
+        document.getElementById("nextQuizBtn").onclick = ()=>{
             current++;
             if(current<quizData.length) showQuestion();
-            else modalContent.innerHTML=`<h2>Quiz Completed!</h2><p>Your Score: ${score} / ${quizData.length}</p><button onclick="assignmentModal.style.display='none';">Close</button>`;
-        });
+            else quizInnerContent.innerHTML = `<h2>Quiz Completed!</h2>
+                                               <p>Your Score: ${score} / ${quizData.length}</p>
+                                               <button onclick="quizModal.style.display='none'">Close</button>`;
+        };
     }
     showQuestion();
 }
